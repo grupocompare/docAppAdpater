@@ -1,0 +1,1208 @@
+{
+  "meta": {
+    "title": "AppAdapter — Documentação Técnica",
+    "generated": "2025-12-18",
+    "timezone": "America/Recife"
+  },
+  "overview": [
+    "AppAdapter é uma aplicação Laravel 9 (PHP) com front-end via Vite/NPM, voltada para integrações e monitoramento entre Winthor (Oracle) e a plataforma BEES.",
+    "Capacidades: painel web com autenticação e verificação de e-mail; rotinas de sincronização via Artisan + Scheduler; logs/monitoramento (BeesRequestLogs, InternalMonitoring); integrações com banco principal e Oracle (yajra/laravel-oci8)."
+  ],
+  "stack": [
+    {
+      "name": "PHP",
+      "value": "^8.0.2"
+    },
+    {
+      "name": "Laravel",
+      "value": "^9.19"
+    },
+    {
+      "name": "Auth",
+      "value": "laravel/ui + Auth::routes(...)"
+    },
+    {
+      "name": "Tokens/API",
+      "value": "laravel/sanctum"
+    },
+    {
+      "name": "Oracle",
+      "value": "yajra/laravel-oci8"
+    },
+    {
+      "name": "Build front-end",
+      "value": "Node.js + NPM + Vite"
+    }
+  ],
+  "setup": [
+    "composer install",
+    "npm install",
+    "cp .env.example .env",
+    "php artisan key:generate",
+    "Configurar banco e BEES no .env",
+    "php artisan migrate",
+    "npm run dev (ou npm run build)",
+    "php artisan serve"
+  ],
+  "env": {
+    "bees": [
+      "BEES_CLIENT_ID",
+      "BEES_CLIENT_SECRET",
+      "BEES_BASE_URL"
+    ],
+    "oracle": [
+      "DB_HOST_SECOND",
+      "DB_PORT_SECOND",
+      "DB_DATABASE_SECOND",
+      "DB_SERVICE_NAME_SECOND",
+      "DB_USERNAME_SECOND",
+      "DB_PASSWORD_SECOND",
+      "DB_TNS",
+      "DB_CHARSET",
+      "DB_SCHEMA_PREFIX",
+      "DB_EDITION",
+      "DB_SERVER_VERSION",
+      "DB_LOAD_BALANCE"
+    ]
+  },
+  "routes": {
+    "web": [
+      {
+        "method": "GET",
+        "path": "/",
+        "endpoint": "closure",
+        "name": "",
+        "middleware": ""
+      },
+      {
+        "method": "GET",
+        "path": "/home",
+        "endpoint": "App\\Http\\Controllers\\HomeController@index",
+        "name": "home",
+        "middleware": ""
+      },
+      {
+        "method": "GET",
+        "path": "/select/accounts",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@selectAccounts",
+        "name": "select.accounts",
+        "middleware": ""
+      },
+      {
+        "method": "GET",
+        "path": "/select/items",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@selectItems",
+        "name": "select.items",
+        "middleware": ""
+      },
+      {
+        "method": "GET",
+        "path": "externas/csv/modelo",
+        "endpoint": "App\\Http\\Controllers\\OutsidePromotionController@downloadCsvModel",
+        "name": "externas.csv.model",
+        "middleware": ""
+      },
+      {
+        "method": "GET",
+        "path": "home/faturas",
+        "endpoint": "App\\Http\\Controllers\\HomeController@invoicesIndex",
+        "name": "home-invoices.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "home/pedidos-bees",
+        "endpoint": "App\\Http\\Controllers\\HomeController@orderBeesIndex",
+        "name": "home-orders-bees.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "home/pedidos-nao-bees",
+        "endpoint": "App\\Http\\Controllers\\HomeController@orderNonBeesIndex",
+        "name": "home-orders-non-bees.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "integracao",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@index",
+        "name": "integracao.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-accounts",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncAccounts",
+        "name": "sync-accounts",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-cancelar-visitas",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncForceCancelVisit",
+        "name": "sync-force-cancel-visit",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-carteira-de-clientes",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncForceUcc",
+        "name": "sync-force-ucc",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-carteira-orcamento-usuario",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncEnforcementUserBudget",
+        "name": "sync-winthor-enforcement-user-budget-to-bees",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-carteira-orcamento-usuario-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyEnforcementUserBudget",
+        "name": "sync-winthor-enforcement-user-budget.destroy",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-controle-estoque-qtd-item",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncEnforcementVendorItem",
+        "name": "sync-enforcement-vendor-item",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-controle-estoque-qtd-item-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyEnforcementVendorItem",
+        "name": "destroy-enforcement-vendor-item",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-desativar-vendedores",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@disableForceUcc",
+        "name": "disable-force-ucc",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-graficos-vendedores",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncChartsBdrId",
+        "name": "sync-force-charts",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-graficos-vendedores-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyChartsBdrId",
+        "name": "sync-force-charts.destroy",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-inventario",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncInventories",
+        "name": "sync-inventories",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-inventario-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyInventories",
+        "name": "destroy-inventory-sku",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-items",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncItems",
+        "name": "sync-items",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-janela-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyDeliveryWindows",
+        "name": "sync-delivery-windows.destroy",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-janela-entregas",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncDeliveryWindows",
+        "name": "sync-delivery-windows",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-pedidos",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyOrder",
+        "name": "destroy-order",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-pedidos-nao-bees",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncOrdersNonBees",
+        "name": "sync-order-no-bees",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-pedidos-status",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncOrdersStatus",
+        "name": "update-orders",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-precos",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncPrices",
+        "name": "sync-prices",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-precos-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyPrices",
+        "name": "destroy-prices",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-promocoes",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncPromotions",
+        "name": "sync-promotions",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-promocoes-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyPromotions",
+        "name": "destroy-promotions",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-promocoes-items-sem-discontos",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncItemsThatDontHaveDiscount",
+        "name": "sync-items-that-dont-have-discount",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-regras-promocoes",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncDeals",
+        "name": "sync-deals",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-sortimento-produtos",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncProductAssortmentInclusion",
+        "name": "sync-assortment-inclusion",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-sortimento-produtos-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyProductAssortmentInclusion",
+        "name": "sync-assortment-inclusion.destroy",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-sortimento-produtos-indisponivel",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncProductAssortmentUnavailable",
+        "name": "sync-assortment-unavailable",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-sortimento-produtos-indisponivel-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyProductAssortmentUnavailable",
+        "name": "sync-assortment-unavailable.destroy",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-visitas",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncForceVisit",
+        "name": "sync-force-visit",
+        "middleware": "verified"
+      },
+      {
+        "method": "resource",
+        "path": "logs",
+        "endpoint": "App\\Http\\Controllers\\LogController",
+        "name": "",
+        "middleware": "verified"
+      },
+      {
+        "method": "resource",
+        "path": "logs-request-trace-id",
+        "endpoint": "App\\Http\\Controllers\\BeesRequestLogsController",
+        "name": "",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento-via-bees",
+        "endpoint": "App\\Http\\Controllers\\BeesMonitoringController@index",
+        "name": "monitoramento.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento-via-bees/{requestTraceId}/{childTraceId}/{date}",
+        "endpoint": "App\\Http\\Controllers\\BeesMonitoringController@show",
+        "name": "monitoramento.show",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/clientes-com-compras",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@buyersNotOnBeesIndex",
+        "name": "buyers-not-on-bees.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "PUT",
+        "path": "monitoramento/clientes-com-compras/{id}",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@buyersNotOnBeesUpdate",
+        "name": "buyers-not-on-bees.update",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/clientes-com-compras/{id}/edit",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@buyersNotOnBeesEdit",
+        "name": "buyers-not-on-bees.edit",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/clientes-sem-compras",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@buyersInactiveIndex",
+        "name": "buyers-inactive.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "PUT",
+        "path": "monitoramento/clientes-sem-compras/{id}",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@buyersInactiveUpdate",
+        "name": "buyers-inactive.update",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/clientes-sem-compras/{id}/edit",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@buyersInactiveEdit",
+        "name": "buyers-inactive.edit",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/pedidos-bees",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@ordersBeesIndex",
+        "name": "orders-bees.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/pedidos-bees/{id}",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@ordersBeesShow",
+        "name": "orders-bees.show",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/pedidos-pendentes",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@ordersPendingIndex",
+        "name": "orders-pending.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "PUT",
+        "path": "monitoramento/pedidos-pendentes-refresh/{id}",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@ordersPendingRefresh",
+        "name": "orders-pending.update-refresh",
+        "middleware": "verified"
+      },
+      {
+        "method": "PUT",
+        "path": "monitoramento/pedidos-pendentes-update-denied/{id}",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@ordersPendingUpdateToDenied",
+        "name": "orders-pending.update-denied",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/pedidos-pendentes/{id}",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@ordersPendingShow",
+        "name": "orders-pending.show",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/processos-bees",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@index",
+        "name": "monitoramento-de-processos-bees.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/produtos-nao-estao-no-bees",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@newStockNotOnBeesIndex",
+        "name": "products-not-on-bees.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "PUT",
+        "path": "monitoramento/produtos-nao-estao-no-bees/{id}",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@newStockNotOnBeesUpdate",
+        "name": "products-not-on-bees.update",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/produtos-nao-estao-no-bees/{id}/edit",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@newStockNotOnBeesEdit",
+        "name": "products-not-on-bees.edit",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/produtos-no-bees-sem-venda",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@beesProductsNoSales90dIndex",
+        "name": "products-no-sales-90d.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "PUT",
+        "path": "monitoramento/produtos-no-bees-sem-venda/{id}",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@beesProductsNoSales90dUpdate",
+        "name": "products-no-sales-90d.update",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/produtos-no-bees-sem-venda/{id}/edit",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@beesProductsNoSales90dEdit",
+        "name": "products-no-sales-90d.edit",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/relatorio-pedidos-bees",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@ordersBeesReport",
+        "name": "orders-bees.report",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/vendedores-nao-estao-no-bees",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@sellersNotOnBeesIndex",
+        "name": "sellers-not-on-bees.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "PUT",
+        "path": "monitoramento/vendedores-nao-estao-no-bees/{id}",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@sellersNotOnBeesUpdate",
+        "name": "sellers-not-on-bees.update",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/vendedores-nao-estao-no-bees/{id}/edit",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@sellersNotOnBeesEdit",
+        "name": "sellers-not-on-bees.edit",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/vendedores-no-bees-sem-vendas",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@sellersOnBeesIndex",
+        "name": "sellers-on-bees.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "PUT",
+        "path": "monitoramento/vendedores-no-bees-sem-vendas/{id}",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@sellersOnBeesUpdate",
+        "name": "sellers-on-bees.update",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "monitoramento/vendedores-no-bees-sem-vendas/{id}/edit",
+        "endpoint": "App\\Http\\Controllers\\InternalMonitoringController@sellersOnBeesEdit",
+        "name": "sellers-on-bees.edit",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "promocoes/discontos-flexivel",
+        "endpoint": "App\\Http\\Controllers\\PromotionsFlexibleDiscountController@index",
+        "name": "flexible-discount.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "PUT",
+        "path": "promocoes/discontos-flexivel/{id}",
+        "endpoint": "App\\Http\\Controllers\\PromotionsFlexibleDiscountController@update",
+        "name": "flexible-discount.update",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "promocoes/discontos-flexivel/{id}/edit",
+        "endpoint": "App\\Http\\Controllers\\PromotionsFlexibleDiscountController@edit",
+        "name": "flexible-discount.edit",
+        "middleware": "verified"
+      },
+      {
+        "method": "resource",
+        "path": "promocoes/externas",
+        "endpoint": "App\\Http\\Controllers\\OutsidePromotionController",
+        "name": "",
+        "middleware": "verified"
+      },
+      {
+        "method": "resource",
+        "path": "usuarios",
+        "endpoint": "App\\Http\\Controllers\\UserController",
+        "name": "",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "usuarios/perfil",
+        "endpoint": "App\\Http\\Controllers\\UserController@editProfile",
+        "name": "usuarios.edicao-perfil",
+        "middleware": "verified"
+      },
+      {
+        "method": "PUT",
+        "path": "usuarios/{id}/perfil",
+        "endpoint": "App\\Http\\Controllers\\UserController@updateProfile",
+        "name": "usuarios.atualizacao-perfil",
+        "middleware": "verified"
+      },
+      {
+        "method": "GET",
+        "path": "usuarios/{id}/resetar-senha",
+        "endpoint": "App\\Http\\Controllers\\UserController@editResetPassword",
+        "name": "usuarios.edicao-senha",
+        "middleware": "verified"
+      },
+      {
+        "method": "PUT",
+        "path": "usuarios/{id}/resetar-senha",
+        "endpoint": "App\\Http\\Controllers\\UserController@updateResetPassword",
+        "name": "usuarios.atualizacao-senha",
+        "middleware": "verified"
+      }
+    ],
+    "integracao_recorte": [
+      {
+        "method": "GET",
+        "path": "integracao",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@index",
+        "name": "integracao.index",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-accounts",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncAccounts",
+        "name": "sync-accounts",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-cancelar-visitas",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncForceCancelVisit",
+        "name": "sync-force-cancel-visit",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-carteira-de-clientes",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncForceUcc",
+        "name": "sync-force-ucc",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-carteira-orcamento-usuario",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncEnforcementUserBudget",
+        "name": "sync-winthor-enforcement-user-budget-to-bees",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-carteira-orcamento-usuario-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyEnforcementUserBudget",
+        "name": "sync-winthor-enforcement-user-budget.destroy",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-controle-estoque-qtd-item",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncEnforcementVendorItem",
+        "name": "sync-enforcement-vendor-item",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-controle-estoque-qtd-item-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyEnforcementVendorItem",
+        "name": "destroy-enforcement-vendor-item",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-desativar-vendedores",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@disableForceUcc",
+        "name": "disable-force-ucc",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-graficos-vendedores",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncChartsBdrId",
+        "name": "sync-force-charts",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-graficos-vendedores-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyChartsBdrId",
+        "name": "sync-force-charts.destroy",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-inventario",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncInventories",
+        "name": "sync-inventories",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-inventario-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyInventories",
+        "name": "destroy-inventory-sku",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-items",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncItems",
+        "name": "sync-items",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-janela-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyDeliveryWindows",
+        "name": "sync-delivery-windows.destroy",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-janela-entregas",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncDeliveryWindows",
+        "name": "sync-delivery-windows",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-pedidos",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyOrder",
+        "name": "destroy-order",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-pedidos-nao-bees",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncOrdersNonBees",
+        "name": "sync-order-no-bees",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-pedidos-status",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncOrdersStatus",
+        "name": "update-orders",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-precos",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncPrices",
+        "name": "sync-prices",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-precos-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyPrices",
+        "name": "destroy-prices",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-promocoes",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncPromotions",
+        "name": "sync-promotions",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-promocoes-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyPromotions",
+        "name": "destroy-promotions",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-promocoes-items-sem-discontos",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncItemsThatDontHaveDiscount",
+        "name": "sync-items-that-dont-have-discount",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-regras-promocoes",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncDeals",
+        "name": "sync-deals",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-sortimento-produtos",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncProductAssortmentInclusion",
+        "name": "sync-assortment-inclusion",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-sortimento-produtos-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyProductAssortmentInclusion",
+        "name": "sync-assortment-inclusion.destroy",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-sortimento-produtos-indisponivel",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncProductAssortmentUnavailable",
+        "name": "sync-assortment-unavailable",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-sortimento-produtos-indisponivel-delete",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@destroyProductAssortmentUnavailable",
+        "name": "sync-assortment-unavailable.destroy",
+        "middleware": "verified"
+      },
+      {
+        "method": "POST",
+        "path": "integracao-visitas",
+        "endpoint": "App\\Http\\Controllers\\IntegratorController@syncForceVisit",
+        "name": "sync-force-visit",
+        "middleware": "verified"
+      }
+    ]
+  },
+  "commands": [
+    {
+      "signature_clean": "auto-delete:first-last {--date= : Data (YYYY-MM-DD). Default: hoje no timezone da app} {--dry : Simula sem enviar DELETE para a BEES}",
+      "description": "Para cada (DC, conta) do dia, compara o primeiro e o último payload e deleta SKUs que saíram.",
+      "file": "AutoDeleteAssortmentFirstVsLastOfDay.php"
+    },
+    {
+      "signature_clean": "auto-delete:recovered-unavailable {--date= : Data base (YYYY-MM-DD) considerada como \"hoje\". Default: hoje no timezone da app} {--max-bytes=1900000 : Tamanho máximo do JSON do payload. Use 0 para não limitar por bytes} {--dry : Executa em modo simulação, sem enviar DELETE para a BEES} {--delete-if-missing-today : (Opcional) Se não houver payload hoje, deletar todos os SKUs de ontem para aquele (DC, conta)}",
+      "description": "Compara o último payload de ontem com o último de hoje (por DC/conta) e remove SKUs que não estão mais em “unavailable”.",
+      "file": "AutoDeleteRecoveredAssortmentUnavailableInBees.php"
+    },
+    {
+      "signature_clean": "bees:invoices:patch-status",
+      "description": "Atualiza status via PATCH; se “Entregue Parcialmente”, envia POST DELIVERED dessa mesma fatura",
+      "file": "SyncWinthorInvoiceStatusToBees.php"
+    },
+    {
+      "signature_clean": "bees:invoices:post-cuts {--dry-run : Só loga, não envia}",
+      "description": "Reenvia via POST (OPEN) invoices com CORTE (QT_FATURADA < QT), ajustando itens para as quantidades cortadas.",
+      "file": "SyncWinthorInvoicesCutsToBees.php"
+    },
+    {
+      "signature_clean": "bees:invoices:post-partial-returns {--dry-run : Só loga, não envia}",
+      "description": "Envia via POST (status DELIVERED) as invoices com entrega parcial por devolução.",
+      "file": "SyncWinthorInvoicesPartialReturnsToBees.php"
+    },
+    {
+      "signature_clean": "bees:invoices:post-today {--dry-run : Só loga, não envia}",
+      "description": "Envia por POST (status OPEN) as invoices novas do dia e registra no bees_invoice_sync",
+      "file": "SyncWinthorInvoicesToBees.php"
+    },
+    {
+      "signature_clean": "bees:invoices:reentry-all {--dry-run : Só loga, não envia}",
+      "description": "Reenvia via POST o payload completo de todas invoices (exceto CANCELLED/NOT_FOUND) adicionando orderDate e mantendo status correto",
+      "file": "ReentryAllInvoicesToBees.php"
+    },
+    {
+      "signature_clean": "bees:invoices:retry-orders {--dry-run : Só loga, não envia para a BEES}",
+      "description": "Reenvia manualmente invoices para a BEES a partir da lista de order_id (numpedrca).",
+      "file": "RetryWinthorInvoicesByOrder.php"
+    },
+    {
+      "signature_clean": "bees:invoices:retry-status {--dry-run : Só loga, não envia para a BEES}",
+      "description": "Reenvia manualmente os status das invoices para a BEES a partir da lista de order_id (numpedrca).",
+      "file": "RetryWinthorInvoicesStatus.php"
+    },
+    {
+      "signature_clean": "delete:accounts-in-bees {--account_ids= : IDs dos clientes a serem removidos}",
+      "description": "Deleta os clientes do BEES.",
+      "file": "DeleteAccountsInBees.php"
+    },
+    {
+      "signature_clean": "delete:bees-order {--orderNumber= : Número do Pedido} {--reason= : Motivo da exclusão}",
+      "description": "Remove pedidos na BEES (DELETE /order/v3)",
+      "file": "DeleteOrderInBees.php"
+    },
+    {
+      "signature_clean": "delete:deals-in-bees {--vendor_deal_ids= : CSV com vendorDealIds a remover}",
+      "description": "Remove DEALS (DELETE V3) em lotes.",
+      "file": "DeleteDealsInBees.php"
+    },
+    {
+      "signature_clean": "delete:delivery-windows-in-bees {--dwIds= : IDs da janela a ser removida}",
+      "description": "Deleta Janela de Entrega no BEES.",
+      "file": "DeleteDeliveryWindowsInBees.php"
+    },
+    {
+      "signature_clean": "delete:enforcement-user-budget-in-bees {--user-ids= : Lista de userIds separados por vírgula (ex.: CDBR-3374,CDBR-3619)}",
+      "description": "Deleta a carteira de orçamento do usuário no BEES para os userIds informados.",
+      "file": "DeleteEnforcementUserBudget.php"
+    },
+    {
+      "signature_clean": "delete:enforcements-from-bees {--ids= : CSV de Ids a deletar (ex: ENF-abc,ENF-def)}",
+      "description": "Deleta enforcements no BEES (v2) a partir de Ids salvos no Postgres.",
+      "file": "DeleteEnforcementsVendorItemInBees.php"
+    },
+    {
+      "signature_clean": "delete:items-in-bees {--item_ids= : IDs dos itens a serem removidos}",
+      "description": "Deleta os itens do BEES.",
+      "file": "DeleteItemsInBees.php"
+    },
+    {
+      "signature_clean": "delete:prices-in-bees {--ids= : Remove prices específicos pelos IDs (separados por vírgula)} {--type= : ACCOUNT",
+      "description": "PRICE_LIST",
+      "file": "VENDOR"
+    },
+    {
+      "signature_clean": "delete:product-assortment-inclusion-in-bees {--delivery_center_ids= : IDs dos galpões de entregas a serem removidos do Sortimento} {--vendor_item_ids= : IDs dos skus a serem removidos do Sortimento}",
+      "description": "Remove os produtos do galpão de entregas no BEES",
+      "file": "DeleteProductAssortmentInclusionInBees.php"
+    },
+    {
+      "signature_clean": "delete:product-assortment-unavailable-in-bees {--delivery_center_id= : Ex.: DC_001} {--vendor_account_id= : CNPJ do cliente (14 dígitos, com zeros à esquerda se preciso)} {--vendor_item_ids= : SKUs (pode repetir a opção ou usar CSV)}",
+      "description": "Remove itens “unavailable” no BEES para 1 DC e 1 conta.",
+      "file": "DeleteProductAssortmentUnavailableInBees.php"
+    },
+    {
+      "signature_clean": "delete:promotions-in-bees {--promotions_ids=* : IDs das promoções a serem removidos} {--vendor_account_ids=* : Lista dos clientes para deletar a promoção}",
+      "description": "Deleta os Promoções do BEES.",
+      "file": "DeletePromotionsInBees.php"
+    },
+    {
+      "signature_clean": "delete:winthor-force-flexible-kpis-to-bees {--bdrid= : Remove gráficos de contas específicas pelo ID}",
+      "description": "Remove os gráficos dos VENDEDORES.",
+      "file": "DeleteForceFlexibleKpiInBees.php"
+    },
+    {
+      "signature_clean": "delete:winthor-inventory-in-bees {--delivery_center_ids= : Delivery Center IDs} {--vendor_item_ids= : IDs dos vendor items para exclusão}",
+      "description": "Remove inventário na BEES (DELETE /inventory/v3)",
+      "file": "DeleteInventoryInBees.php"
+    },
+    {
+      "signature_clean": "disable:external-promotions",
+      "description": "Atualiza o Status das promoções externas que já finalizaram.",
+      "file": "DisableExternalPromotions.php"
+    },
+    {
+      "signature_clean": "pg:backup",
+      "description": "Backup do PostgreSQL em .dump (Windows) com retenção",
+      "file": "PgBackup.php"
+    },
+    {
+      "signature_clean": "sync:bees-bonus",
+      "description": "Processa pendências de  quando pedido original já tem NUMPED",
+      "file": "SyncBeesBonussesOrdersToWinthor.php"
+    },
+    {
+      "signature_clean": "sync:bees-freegood",
+      "description": "Localiza FREEGOOD gerados pelo WinThor (PCPEDC/PCPEDI) e cria o pedido FREEGOOD na BEES",
+      "file": "SyncBeesFreegoodOrdersToBees.php"
+    },
+    {
+      "signature_clean": "sync:bees-orders {--status=PENDING : BEES orderStatus (ex.: PENDING",
+      "description": "ALL)} {--deliveryCenterId= : buscar por distribuidora}",
+      "file": "GET BEES orders e grava em PCPEDCFV/PCPEDIFV (WinThor)"
+    },
+    {
+      "signature_clean": "sync:check-credit-and-sync",
+      "description": "Verifica alteração de crédito (bloqueio/liberação - 1203 Extrato) e dispara syncs quando necessário.",
+      "file": "CheckAccountCreditAndSync.php"
+    },
+    {
+      "signature_clean": "sync:orders-status {--orders_number=* : Números dos pedidos (aceita múltiplas flags, vírgulas ou espaço)} {--status= : Status a atualizar (ex.: Confirmado, INVOICED, DELIVERED)}",
+      "description": "Atualiza somente o status do(s) pedido(s) no BEES.",
+      "file": "SyncOrderStatusToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-account-credit-to-bees {--account_ids= : Sincroniza o créditos das contas específicas pelo IDs}",
+      "description": "Sincroniza o crédito clientes do Winthor com a API do BEES em lote.",
+      "file": "SyncWinthorAccountsCreditToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-accounts-to-bees {--account_ids= : Sincroniza contas específicas pelo IDs}",
+      "description": "Sincroniza os clientes do Winthor com a API do BEES em lotes.",
+      "file": "SyncWinthorAccountsToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-auto-cancel-visits {--from-date= : Data de corte exclusiva da visita (YYYY-MM-DD). Padrão: hoje}",
+      "description": "Cancela todas as visitas cujo visitDate seja maior que a data de corte.",
+      "file": "AutoCancelVisitsToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-deals-items-that-dont-have-discounts-to-bees",
+      "description": "Envia DEAL (PUT V3) para o BEES com itens sem descontos + itens de promoções externas ativas, limitando a 5.000 por excludedVendorItemIds.",
+      "file": "SyncWinthorDealsItemsThatDontHaveDiscountsToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-deals-to-bees {--vendor_promotion_ids=* : Sincroniza os deals (mêcanicas) específica da promoções pelo IDs}",
+      "description": "Envia DEALS (PUT V3) para o BEES Data Ingestion Relay (v2/deals/v3).",
+      "file": "SyncWinthorDealsToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-delivery-windows-to-bees",
+      "description": "Sincroniza as Janelas de entrega por cidades do Winthor com a API do BEES em lotes.",
+      "file": "SyncWinthorDeliveryWindowsToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-disable-force-ucc-to-bees {--ucc_ids=* : Desativa os vendedores}",
+      "description": "Desativa os vendedores na Bees",
+      "file": "DisableWinthorForceUccToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-enforcement-user-budget-to-bees {--user-ids= : Lista de userIds separados por vírgula (ex.: CDBR-3374,CDBR-3619)}",
+      "description": "Sincroniza a carteira de orçamento de usuário com a BEES (POST /enforcements-user-budget/v1)",
+      "file": "SyncWinthorEnforcementUserBudgetToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-enforcement-vendor-item-to-bees",
+      "description": "Envia enforcements (por item) para a API do BEES, 1 payload por DC, com chunking <=1MB.",
+      "file": "SyncWinthorEnforcementsByVendorItemToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-force-cancel-visit-to-bees {--visit_ids=* : IDs de visitas a cancelar (pode repetir a opção ou usar vírgula)}",
+      "description": "Cancela visitas (VENDEDOR x CLIENTE) específicas no BEES.",
+      "file": "SyncWinthorForceCancelVisitsToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-force-flexible-kpis-to-bees {--bdrid= : Sincroniza contas específicas pelo ID}",
+      "description": "Sincroniza os gráficos dos VENDEDORES.",
+      "file": "SyncWinthorForceFlexibleKpiToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-force-ucc-to-bees {--ucc_ids=* : Sincroniza Contas com o BDR específo pelo IDs do bdr}",
+      "description": "Sincroniza o Catálogo de Clientes do Usuário (ou UCC) indicando quais Contas são atribuídas a um BDR específico.",
+      "file": "SyncWinthorForceUccToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-force-visit-to-bees {--from-date= : Data da visita (YYYY-MM-DD). Padrão: amanhã} {--seller_ids=* : Sincroniza visitas apenas para os IDs específicos de vendedores}",
+      "description": "Sincroniza visitas (FORCE_VISITS) de um ou mais vendedores para uma data específica.",
+      "file": "SyncWinthorForceVisitsToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-inventory-to-bees",
+      "description": "Sincroniza inventário com a BEES (POST /inventory/v3)",
+      "file": "SyncWinthorInventoryToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-items-to-bees {--item_ids= : Sincroniza items específicos pelo IDs}",
+      "description": "Sincroniza os items do Winthor com a API do BEES em lotes.",
+      "file": "SyncWinthorItemsToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-orders-changes-third-to-bees",
+      "description": "Sincroniza status dos pedidos com o BEES em lotes.",
+      "file": "SyncWinthorOrdersChangesToBeesThird.php"
+    },
+    {
+      "signature_clean": "sync:winthor-orders-changes-to-bees",
+      "description": "Sincroniza status dos pedidos com o BEES em lotes.",
+      "file": "SyncWinthorOrdersChangesToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-orders-non-bees-to-bees {--initial : Força a janela de 12 meses}",
+      "description": "Sincroniza pedidos NON-BEES com o BEES em lotes.",
+      "file": "SyncWinthorOrdersNonBeesToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-orders-non-bees-to-bees-v2 {--initial : Força janela maior para patch (365 dias)}",
+      "description": "Sincroniza pedidos NON-BEES com BEES (create ontem + patch abertos).",
+      "file": "SyncWinthorOrdersNonBeesToBeesV2.php"
+    },
+    {
+      "signature_clean": "sync:winthor-prices-to-bees {--only-id=* : Filtrar por IDS (PRICE_LIST) específicos} {--max-bytes=1900000 : Tamanho máximo do payload JSON (bytes)} {--valid-from= : YYYY-MM-DD (opcional) para enviar em cada item} {--dry-run : Não envia; só mostra métricas dos payloads} {--max-batches-per-minute=0 : 0 = sem limite; >0 = limite por minuto} {--order-by-price-list : Ordena o cursor por PRICE_LIST para reduzir buckets} {--no-dedup : Desabilita deduplicação em memória (confie no DISTINCT do SQL)}",
+      "description": "Envia preços em múltiplos payloads (<~2MB) lendo em streaming, com packing incremental por bytes.",
+      "file": "SyncWinthorPricesToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-product-assortment-inclusion-to-bees",
+      "description": "Sincroniza Product Assortment Inclusion do Winthor para o BEES em chunks",
+      "file": "SyncWinthorProductAssortmentInclusionToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-product-assortment-unavailable-to-bees",
+      "description": "Sincroniza o sortimento de produtos indisponível com a BEES (POST /product-assortment-unavailable/v3/)",
+      "file": "SyncWinthorProductAssortmentUnavailableToBees.php"
+    },
+    {
+      "signature_clean": "sync:winthor-promotions-to-bees {--promotions_ids=* : Sincroniza promoções específicos pelo IDs}",
+      "description": "Sincroniza os promoções do Winthor com a API do BEES em lotes.",
+      "file": "SyncWinthorPromotionsToBees.php"
+    }
+  ],
+  "scheduler": [
+    {
+      "command": "sync:winthor-accounts-to-bees",
+      "schedule_chain": ")->everyFourHours()->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-account-credit-to-bees",
+      "schedule_chain": ")->everySixHours()->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:check-credit-and-sync",
+      "schedule_chain": ")->everyTenMinutes()->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-delivery-windows-to-bees",
+      "schedule_chain": ")->dailyAt('23:50')->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-items-to-bees",
+      "schedule_chain": ")->twiceDaily(0, 12)->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-product-assortment-inclusion-to-bees",
+      "schedule_chain": ")->twiceDaily(0, 12)->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-inventory-to-bees",
+      "schedule_chain": ")->everyThirtyMinutes()->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-prices-to-bees",
+      "schedule_chain": ")->everyThreeHours()->timezone('America/Recife')->runInBackground("
+    },
+    {
+      "command": "sync:winthor-promotions-to-bees",
+      "schedule_chain": ")->everyThreeHours()->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-deals-to-bees",
+      "schedule_chain": ")->everyThreeHours()->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-deals-items-that-dont-have-discounts-to-bees",
+      "schedule_chain": ")->dailyAt('03:00')->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-product-assortment-unavailable-to-bees",
+      "schedule_chain": ")->dailyAt('02:40')->timezone('America/Recife')->runInBackground("
+    },
+    {
+      "command": "auto-delete:recovered-unavailable",
+      "schedule_chain": ")->dailyAt('03:40')->timezone('America/Recife')->runInBackground("
+    },
+    {
+      "command": "sync:winthor-enforcement-vendor-item-to-bees",
+      "schedule_chain": ")->everyThreeHours()->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:bees-orders",
+      "schedule_chain": ", ['--status' => 'PENDING'])->everyFiveMinutes()->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-orders-changes-third-to-bees",
+      "schedule_chain": ")->everyFiveMinutes()->timezone('America/Recife')->runInBackground("
+    },
+    {
+      "command": "sync:bees-bonus",
+      "schedule_chain": ")->everyFiveMinutes()->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:bees-freegood",
+      "schedule_chain": ")->everyFiveMinutes()->timezone('America/Recife'"
+    },
+    {
+      "command": "bees:invoices:post-today",
+      "schedule_chain": ")->everyFiveMinutes()->timezone('America/Recife'"
+    },
+    {
+      "command": "bees:invoices:patch-status",
+      "schedule_chain": ")->everyTenMinutes()->timezone('America/Recife')->runInBackground("
+    },
+    {
+      "command": "sync:winthor-orders-non-bees-to-bees-v2",
+      "schedule_chain": ")->dailyAt('01:00')->timezone('America/Recife')->runInBackground("
+    },
+    {
+      "command": "sync:winthor-force-ucc-to-bees",
+      "schedule_chain": ")->dailyAt('19:00')->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-force-visit-to-bees",
+      "schedule_chain": ")->dailyAt('18:30')->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-enforcement-user-budget-to-bees",
+      "schedule_chain": ")->monthlyOn(5, '02:00')->timezone('America/Recife'"
+    },
+    {
+      "command": "sync:winthor-force-flexible-kpis-to-bees",
+      "schedule_chain": ")->dailyAt('08:00')->timezone('America/Recife'"
+    },
+    {
+      "command": "disable:external-promotions",
+      "schedule_chain": ")->dailyAt('00:20')->timezone('America/Recife'"
+    },
+    {
+      "command": "pg:backup",
+      "schedule_chain": ")->dailyAt('01:00')->timezone('America/Recife')->runInBackground("
+    },
+    {
+      "command": "pg:backup",
+      "schedule_chain": ")->dailyAt('09:00')->timezone('America/Recife')->runInBackground("
+    },
+    {
+      "command": "pg:backup",
+      "schedule_chain": ")->dailyAt('17:00')->timezone('America/Recife')->runInBackground("
+    }
+  ],
+  "migrations": [],
+  "notes": [
+    "Produção: configure o cron para executar `php artisan schedule:run` a cada minuto.",
+    "Troubleshooting: verifique `storage/logs/laravel.log`; para falhas Oracle, confira variáveis DB_*_SECOND, driver OCI e conectividade; se rotas exigirem acesso, verifique e-mail verificado (middleware verified) e permissões."
+  ]
+}

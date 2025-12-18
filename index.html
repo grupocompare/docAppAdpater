@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AppAdapter — Documentação</title>
+  <meta name="description" content="Documentação técnica interativa do AppAdapter." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/github-dark.min.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">AA</div>
+        <div class="brand-text">
+          <div class="title">AppAdapter</div>
+          <div class="subtitle">Documentação Técnica</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <label class="search">
+          <span class="icon" aria-hidden="true">⌕</span>
+          <input id="searchInput" type="search" placeholder="Buscar na documentação..." autocomplete="off" />
+        </label>
+
+        <div class="toggles">
+          <button class="btn ghost" id="expandAllBtn" title="Expandir tudo">Expandir</button>
+          <button class="btn ghost" id="collapseAllBtn" title="Recolher tudo">Recolher</button>
+          <button class="btn ghost" id="themeBtn" title="Alternar tema">Tema</button>
+        </div>
+      </div>
+
+      <nav class="nav" id="nav"></nav>
+
+      <div class="footer">
+        <div class="pill" id="generatedPill"></div>
+        <div class="hint">Dica: use <kbd>/</kbd> para focar na busca.</div>
+      </div>
+    </aside>
+
+    <main class="main" id="main">
+      <header class="topbar">
+        <div class="breadcrumbs" id="breadcrumbs">AppAdapter</div>
+        <div class="top-actions">
+          <button class="btn" id="copyLinkBtn" title="Copiar link da seção atual">Copiar link</button>
+          <a class="btn ghost" href="data.json" target="_blank" rel="noopener">Ver dados (JSON)</a>
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="hero" id="hero">
+          <h1>AppAdapter</h1>
+          <p class="lead">Documentação técnica interativa para leitura rápida, pesquisa e cópia de comandos.</p>
+          <div class="chips" id="heroChips"></div>
+        </section>
+
+        <div id="searchResults" class="search-results hidden"></div>
+
+        <div id="sections"></div>
+      </div>
+    </main>
+  </div>
+
+  <template id="sectionTemplate">
+    <section class="doc-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"></h2>
+          <p class="section-desc"></p>
+        </div>
+        <div class="section-actions">
+          <button class="btn ghost section-link">#</button>
+          <button class="btn ghost section-toggle">Recolher</button>
+        </div>
+      </div>
+      <div class="section-body"></div>
+    </section>
+  </template>
+
+  <template id="cardTemplate">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"></div>
+        <div class="card-actions"></div>
+      </div>
+      <div class="card-body"></div>
+    </div>
+  </template>
+
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
+  <script defer src="app.js"></script>
+</body>
+</html>
