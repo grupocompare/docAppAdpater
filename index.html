@@ -1,96 +1,1969 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AppAdapter — Documentação</title>
-  <meta name="description" content="Documentação técnica interativa do AppAdapter." />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/github-dark.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação Técnica - AppAdapter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --sidebar-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --code-bg: #1e1e1e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        aside {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            padding: 2rem;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        aside h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            display: block;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: #eff6ff;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        main {
+            margin-left: 280px;
+            flex: 1;
+            padding: 3rem;
+            max-width: 100%;
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem;
+            color: var(--text);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin: 1.5rem 0 0.8rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            color: var(--text-light);
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 0.85rem;
+        }
+
+        th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 12px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+            color: var(--text);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        tr:hover td {
+            background: #fcfcfc;
+        }
+
+        /* Code & Badges */
+        code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: #e2e8f0;
+            padding: 0.8rem;
+            border-radius: 6px;
+            font-family: monospace;
+            display: block;
+            white-space: pre-wrap;
+            font-size: 0.8rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-get {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-post {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .badge-put {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-del {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* FAQ Accordion */
+        .faq-accordion {
+            display: grid;
+            gap: 12px;
+            margin-top: 1rem;
+        }
+
+        .faq-item {
+            background: var(--sidebar-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+            overflow: hidden;
+        }
+
+        .faq-item summary {
+            cursor: pointer;
+            padding: 14px 16px;
+            font-weight: 700;
+            color: var(--text);
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-item summary::after {
+            content: "▾";
+            color: var(--text-light);
+            font-size: 0.95rem;
+            transition: transform 0.2s ease;
+        }
+
+        .faq-item[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        .faq-content {
+            padding: 0 16px 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .faq-content p,
+        .faq-content ul {
+            margin-top: 12px;
+        }
+
+        /* Se quiser deixar os <pre> consistentes com seu tema */
+        .faq-content pre {
+            background: var(--code-bg);
+            color: #e2e8f0;
+            padding: 0.8rem;
+            border-radius: 8px;
+            overflow: auto;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            margin-top: 12px;
+        }
+
+        /* Lists (geral) */
+        main ul {
+            margin: 0.75rem 0 1rem;
+            padding-left: 1.1rem;
+            color: var(--text-light);
+        }
+
+        main li {
+            margin: 0.35rem 0;
+            line-height: 1.6;
+        }
+
+        /* Lista principal mais elegante */
+        section>ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 0.75rem;
+        }
+
+        section>ul>li {
+            position: relative;
+            padding-left: 1.35rem;
+            margin: 0.55rem 0;
+        }
+
+        section>ul>li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.65em;
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--primary);
+        }
+
+        /* Sublistas em formato “árvore” */
+        section ul ul {
+            list-style: none;
+            margin-top: 0.5rem;
+            padding-left: 1.1rem;
+            border-left: 2px solid var(--border);
+        }
+
+        section ul ul>li {
+            position: relative;
+            padding-left: 1rem;
+            margin: 0.35rem 0;
+        }
+
+        section ul ul>li::before {
+            content: "";
+            position: absolute;
+            left: -2px;
+            top: 0.85em;
+            width: 12px;
+            height: 2px;
+            background: var(--border);
+        }
+
+        /* Deixa a palavra “Monitoramentos” mais destacada */
+        section>ul>li>ul {
+            margin-top: 0.65rem;
+        }
+
+        @media (max-width: 1024px) {
+            aside {
+                width: 220px;
+            }
+
+            main {
+                margin-left: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            aside {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            main {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+
+            body {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <div class="app" id="app">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <div class="logo" aria-hidden="true">AA</div>
-        <div class="brand-text">
-          <div class="title">AppAdapter</div>
-          <div class="subtitle">Documentação Técnica</div>
-        </div>
-      </div>
 
-      <div class="controls">
-        <label class="search">
-          <span class="icon" aria-hidden="true">⌕</span>
-          <input id="searchInput" type="search" placeholder="Buscar na documentação..." autocomplete="off" />
-        </label>
-
-        <div class="toggles">
-          <button class="btn ghost" id="expandAllBtn" title="Expandir tudo">Expandir</button>
-          <button class="btn ghost" id="collapseAllBtn" title="Recolher tudo">Recolher</button>
-          <button class="btn ghost" id="themeBtn" title="Alternar tema">Tema</button>
-        </div>
-      </div>
-
-      <nav class="nav" id="nav"></nav>
-
-      <div class="footer">
-        <div class="pill" id="generatedPill"></div>
-        <div class="hint">Dica: use <kbd>/</kbd> para focar na busca.</div>
-      </div>
+    <aside>
+        <h1>AppAdapter</h1>
+        <nav>
+            <ul>
+                <li><a href="#geral" class="active">Visão Geral</a></li>
+                <li><a href="#stack">Stack e Setup</a></li>
+                <li><a href="#rotas">Rotas Web</a></li>
+                <li><a href="#comandos">Comandos Artisan</a></li>
+                <li><a href="#agendador">Agendador (Cron)</a></li>
+                <li><a href="#banco">Banco de Dados</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+        </nav>
     </aside>
 
-    <main class="main" id="main">
-      <header class="topbar">
-        <div class="breadcrumbs" id="breadcrumbs">AppAdapter</div>
-        <div class="top-actions">
-          <button class="btn" id="copyLinkBtn" title="Copiar link da seção atual">Copiar link</button>
-          <a class="btn ghost" href="data.json" target="_blank" rel="noopener">Ver dados (JSON)</a>
-        </div>
-      </header>
-
-      <div class="content">
-        <section class="hero" id="hero">
-          <h1>AppAdapter</h1>
-          <p class="lead">Documentação técnica interativa para leitura rápida, pesquisa e cópia de comandos.</p>
-          <div class="chips" id="heroChips"></div>
+    <main>
+        <section id="geral" class="active">
+            <h2>Visão Geral</h2>
+            <p>O <strong>AppAdapter</strong> é uma aplicação Laravel 9 voltada para a integração e monitoramento entre o
+                ecossistema <strong>Winthor (Oracle)</strong> e a plataforma <strong>BEES</strong>.</p>
+            <p>Principais funcionalidades:</p>
+            <ul>
+                <li>Gestão de contas, catálogo, promoções, vendedores e pedidos.</li>
+                <li>Painel administrativo de pedidos Bees, pedidos não-Bees e faturas.</li>
+                <li>Monitoramentos
+                    <ul> <!-- Início da sublista -->
+                        <li>Sicronização Bees</li>
+                        <li>ERP
+                            <ul> <!-- Início da sublista -->
+                                <li>Clientes</li>
+                                <li>Produtos</li>
+                                <li>Vendedores</li>
+                            </ul>
+                        </li>
+                        <li>Espelho
+                            <ul> <!-- Início da sublista -->
+                                <li>Pedidos</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>Controle de Promoções.</li>
+                <li>Gestão de usuários e permissões.</li>
+                <li>Controle de Log's.</li>
+            </ul>
         </section>
 
-        <div id="searchResults" class="search-results hidden"></div>
+        <section id="stack">
+            <h2>Stack e Dependências</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tecnologia</th>
+                            <th>Versão/Pacote</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>PHP</td>
+                            <td>^8.0.2</td>
+                        </tr>
+                        <tr>
+                            <td>Laravel</td>
+                            <td>^9.19</td>
+                        </tr>
+                        <tr>
+                            <td>Oracle Driver</td>
+                            <td>yajra/laravel-oci8</td>
+                        </tr>
+                        <tr>
+                            <td>Front-end</td>
+                            <td>Blade + Bootstrap</td>
+                        </tr>
+                        <tr>
+                            <td>Auth</td>
+                            <td>Laravel Sanctum / UI</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-        <div id="sections"></div>
-      </div>
+            <h3>Instalação Local</h3>
+            <ul>
+                <li>composer install</li>
+                <li>cp .env.example .env</li>
+                <li>php artisan key:generate</li>
+                <li>php artisan migrate</li>
+                <li>php artisan db:seed</li>
+            </ul>
+        </section>
+
+        <section id="rotas">
+            <h2>Rotas Web</h2>
+            <p>
+                Abaixo as rotas do sistema. Todas as rotas de gerenciamento exigem o middleware
+                <code>verified</code>.
+            </p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Método</th>
+                            <th>Path</th>
+                            <th>Nome</th>
+                            <th>Middleware</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <!-- HOME -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/home</code></td>
+                            <td>home</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/home/pedidos-bees</code></td>
+                            <td>home-orders-bees.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/home/pedidos-nao-bees</code></td>
+                            <td>home-orders-non-bees.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/home/faturas</code></td>
+                            <td>home-invoices.index</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- USUÁRIOS (RESOURCE: index/create/store/edit/update/destroy) -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/usuarios</code></td>
+                            <td>usuarios.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/usuarios/create</code></td>
+                            <td>usuarios.create</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/usuarios</code></td>
+                            <td>usuarios.store</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/usuarios/{usuario}/edit</code></td>
+                            <td>usuarios.edit</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/usuarios/{usuario}</code></td>
+                            <td>usuarios.update</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PATCH</span></td>
+                            <td><code>/usuarios/{usuario}</code></td>
+                            <td>usuarios.update</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-delete">DELETE</span></td>
+                            <td><code>/usuarios/{usuario}</code></td>
+                            <td>usuarios.destroy</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- USUÁRIOS (AÇÕES EXTRAS) -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/usuarios/{id}/resetar-senha</code></td>
+                            <td>usuarios.edicao-senha</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/usuarios/{id}/resetar-senha</code></td>
+                            <td>usuarios.atualizacao-senha</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/usuarios/perfil</code></td>
+                            <td>usuarios.edicao-perfil</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/usuarios/{id}/perfil</code></td>
+                            <td>usuarios.atualizacao-perfil</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- LOGS REQUEST TRACE ID (RESOURCE: index/show) -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/logs-request-trace-id</code></td>
+                            <td>logs-request-trace-id.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/logs-request-trace-id/{logs_request_trace_id}</code></td>
+                            <td>logs-request-trace-id.show</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- INTEGRAÇÃO -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/integracao</code></td>
+                            <td>integracao.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-accounts</code></td>
+                            <td>sync-accounts</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-items</code></td>
+                            <td>sync-items</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-janela-entregas</code></td>
+                            <td>sync-delivery-windows</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-janela-delete</code></td>
+                            <td>sync-delivery-windows.destroy</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-sortimento-produtos</code></td>
+                            <td>sync-assortment-inclusion</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-sortimento-produtos-delete</code></td>
+                            <td>sync-assortment-inclusion.destroy</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-carteira-de-clientes</code></td>
+                            <td>sync-force-ucc</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-desativar-vendedores</code></td>
+                            <td>disable-force-ucc</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-visitas</code></td>
+                            <td>sync-force-visit</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-cancelar-visitas</code></td>
+                            <td>sync-force-cancel-visit</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-controle-estoque-qtd-item</code></td>
+                            <td>sync-enforcement-vendor-item</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-controle-estoque-qtd-item-delete</code></td>
+                            <td>destroy-enforcement-vendor-item</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-precos</code></td>
+                            <td>sync-prices</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-precos-delete</code></td>
+                            <td>destroy-prices</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-inventario</code></td>
+                            <td>sync-inventories</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-inventario-delete</code></td>
+                            <td>destroy-inventory-sku</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-promocoes</code></td>
+                            <td>sync-promotions</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-promocoes-delete</code></td>
+                            <td>destroy-promotions</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-regras-promocoes</code></td>
+                            <td>sync-deals</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-promocoes-items-sem-discontos</code></td>
+                            <td>sync-items-that-dont-have-discount</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-pedidos-nao-bees</code></td>
+                            <td>sync-order-no-bees</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-pedidos</code></td>
+                            <td>destroy-order</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-pedidos-status</code></td>
+                            <td>update-orders</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-sortimento-produtos-indisponivel</code></td>
+                            <td>sync-assortment-unavailable</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-sortimento-produtos-indisponivel-delete</code></td>
+                            <td>sync-assortment-unavailable.destroy</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-carteira-orcamento-usuario</code></td>
+                            <td>sync-winthor-enforcement-user-budget-to-bees</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-carteira-orcamento-usuario-delete</code></td>
+                            <td>sync-winthor-enforcement-user-budget.destroy</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-graficos-vendedores</code></td>
+                            <td>sync-force-charts</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/integracao-graficos-vendedores-delete</code></td>
+                            <td>sync-force-charts.destroy</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- MONITORAMENTO (BEES) -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento-via-bees</code></td>
+                            <td>monitoramento.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento-via-bees/{requestTraceId}/{childTraceId}/{date}</code></td>
+                            <td>monitoramento.show</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- MONITORAMENTO (INTERNAL) -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/processos-bees</code></td>
+                            <td>monitoramento-de-processos-bees.index</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- CLIENTES COM COMPRAS -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/clientes-com-compras</code></td>
+                            <td>buyers-not-on-bees.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/clientes-com-compras/{id}/edit</code></td>
+                            <td>buyers-not-on-bees.edit</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/monitoramento/clientes-com-compras/{id}</code></td>
+                            <td>buyers-not-on-bees.update</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- CLIENTES SEM COMPRAS -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/clientes-sem-compras</code></td>
+                            <td>buyers-inactive.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/clientes-sem-compras/{id}/edit</code></td>
+                            <td>buyers-inactive.edit</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/monitoramento/clientes-sem-compras/{id}</code></td>
+                            <td>buyers-inactive.update</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- PRODUTOS NÃO ESTÃO NO BEES -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/produtos-nao-estao-no-bees</code></td>
+                            <td>products-not-on-bees.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/produtos-nao-estao-no-bees/{id}/edit</code></td>
+                            <td>products-not-on-bees.edit</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/monitoramento/produtos-nao-estao-no-bees/{id}</code></td>
+                            <td>products-not-on-bees.update</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- PRODUTOS NO BEES SEM VENDA -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/produtos-no-bees-sem-venda</code></td>
+                            <td>products-no-sales-90d.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/produtos-no-bees-sem-venda/{id}/edit</code></td>
+                            <td>products-no-sales-90d.edit</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/monitoramento/produtos-no-bees-sem-venda/{id}</code></td>
+                            <td>products-no-sales-90d.update</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- VENDEDORES NÃO ESTÃO NO BEES -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/vendedores-nao-estao-no-bees</code></td>
+                            <td>sellers-not-on-bees.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/vendedores-nao-estao-no-bees/{id}/edit</code></td>
+                            <td>sellers-not-on-bees.edit</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/monitoramento/vendedores-nao-estao-no-bees/{id}</code></td>
+                            <td>sellers-not-on-bees.update</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- VENDEDORES NO BEES SEM VENDAS -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/vendedores-no-bees-sem-vendas</code></td>
+                            <td>sellers-on-bees.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/vendedores-no-bees-sem-vendas/{id}/edit</code></td>
+                            <td>sellers-on-bees.edit</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/monitoramento/vendedores-no-bees-sem-vendas/{id}</code></td>
+                            <td>sellers-on-bees.update</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- PEDIDOS PENDENTES -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/pedidos-pendentes</code></td>
+                            <td>orders-pending.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/pedidos-pendentes/{id}</code></td>
+                            <td>orders-pending.show</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/monitoramento/pedidos-pendentes-update-denied/{id}</code></td>
+                            <td>orders-pending.update-denied</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/monitoramento/pedidos-pendentes-refresh/{id}</code></td>
+                            <td>orders-pending.update-refresh</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- PEDIDOS BEES -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/pedidos-bees</code></td>
+                            <td>orders-bees.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/pedidos-bees/{id}</code></td>
+                            <td>orders-bees.show</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/monitoramento/relatorio-pedidos-bees</code></td>
+                            <td>orders-bees.report</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- LOGS (RESOURCE: index) -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/logs</code></td>
+                            <td>logs.index</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- PROMOÇÕES -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/promocoes/discontos-flexivel</code></td>
+                            <td>flexible-discount.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/promocoes/discontos-flexivel/{id}/edit</code></td>
+                            <td>flexible-discount.edit</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/promocoes/discontos-flexivel/{id}</code></td>
+                            <td>flexible-discount.update</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <!-- PROMOÇÕES EXTERNAS (RESOURCE) -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/promocoes/externas</code></td>
+                            <td>externas.index</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/promocoes/externas/create</code></td>
+                            <td>externas.create</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-post">POST</span></td>
+                            <td><code>/promocoes/externas</code></td>
+                            <td>externas.store</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/promocoes/externas/{externa}</code></td>
+                            <td>externas.show</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/promocoes/externas/{externa}/edit</code></td>
+                            <td>externas.edit</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PUT</span></td>
+                            <td><code>/promocoes/externas/{externa}</code></td>
+                            <td>externas.update</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-put">PATCH</span></td>
+                            <td><code>/promocoes/externas/{externa}</code></td>
+                            <td>externas.update</td>
+                            <td>verified</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-delete">DELETE</span></td>
+                            <td><code>/promocoes/externas/{externa}</code></td>
+                            <td>externas.destroy</td>
+                            <td>verified</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/externas/csv/modelo</code></td>
+                            <td>externas.csv.model</td>
+                            <td>-</td>
+                        </tr>
+
+                        <!-- SELECTS -->
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/select/accounts</code></td>
+                            <td>select.accounts</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-get">GET</span></td>
+                            <td><code>/select/items</code></td>
+                            <td>select.items</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="comandos">
+            <h2>Comandos Artisan (CLI)</h2>
+            <p>Abaixo estão todos os comandos disponíveis no sistema para execução manual via terminal (CLI). Utilize-os
+                para manutenções pontuais ou re-processamento de dados.</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Assinatura Clean</th>
+                            <th style="width: 25%;">Finalidade</th>
+                            <th style="width: 25%;">Entidade</th>
+                            <th style="width: 25%;">Exemplo de Uso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>sync:winthor-accounts-to-bees</code></td>
+                            <td>Sincroniza os cadastros de clientes em lotes.</td>
+                            <td>ACCOUNTS</td>
+                            <td><span class="code-block">php artisan sync:winthor-accounts-to-bees
+                                    --account_ids="123456789"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>delete:accounts-in-bees</code></td>
+                            <td>Deleta os cadastros de clientes em lotes.</td>
+                            <td>ACCOUNTS</td>
+                            <td><span class="code-block">php artisan delete:accounts-in-bees
+                                    --account_ids="09442688000134,11469145000152"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:check-credit-and-sync</code></td>
+                            <td>Sincroniza os cadastros de clientes e seus créditos a cada 10 minutos do últimos
+                                clientes que foram liberado/bloqueados no crédito.</td>
+                            <td>ACCOUNTS|CREDITS</td>
+                            <td><span class="code-block">php artisan sync:check-credit-and-sync</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-account-credit-to-bees</code></td>
+                            <td>Sincroniza os créditos de clientes em lotes.</td>
+                            <td>CREDITS</td>
+                            <td><span class="code-block">php artisan sync:winthor-account-credit-to-bees
+                                    --account_ids="24803588000180,40878282000149"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-delivery-windows-to-bees</code></td>
+                            <td>Sincroniza as janelas de entregas.</td>
+                            <td>DELIVERY_WINDOWS</td>
+                            <td><span class="code-block">php artisan sync:winthor-delivery-windows-to-bees"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>delete:delivery-windows-in-bees</code></td>
+                            <td>Deleta as janelas de entregas.</td>
+                            <td>DELIVERY_WINDOWS</td>
+                            <td><span class="code-block">php artisan delete:delivery-windows-in-bees
+                                    --dwIds=="20251103-DW-ABARE-BA,20251103-DW-ABREU-E-LIMA-PE"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-items-to-bees</code></td>
+                            <td>Sincroniza os items em lote.</td>
+                            <td>ITEMS</td>
+                            <td><span class="code-block">php artisan sync:winthor-items-to-bees
+                                    --item_ids="896011116525, 7896011107929"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>delete:items-in-bees</code></td>
+                            <td>Deleta as janelas de entregas.</td>
+                            <td>ITEMS</td>
+                            <td><span class="code-block">php artisan delete:items-in-bees --item_ids="896011116525,
+                                    7896011107929"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-product-assortment-inclusion-to-bees</code></td>
+                            <td>Sincroniza os items que existe em cada centro de distribuição.</td>
+                            <td>PRODUCT_ASSORTMENT_INCLUSION</td>
+                            <td><span class="code-block">php artisan
+                                    sync:winthor-product-assortment-inclusion-to-bees</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>delete:product-assortment-inclusion-in-bees</code></td>
+                            <td>Deleta os items de um centro de distribuição.</td>
+                            <td>PRODUCT_ASSORTMENT_INCLUSION</td>
+                            <td><span class="code-block">php artisan
+                                    delete:product-assortment-inclusion-in-bees--delivery_center_ids="DC_001,DC_005"
+                                    --vendor_item_ids="77896213004063,7790070218216"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-product-assortment-unavailable-to-bees</code></td>
+                            <td>Sincroniza os items que estão indisponiveis para venda para cada cliente..</td>
+                            <td>PRODUCT_ASSORTMENT_UNAVAILABLE</td>
+                            <td><span class="code-block">php artisan
+                                    sync:winthor-product-assortment-unavailable-to-bees</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>delete:product-assortment-unavailable-in-bees</code></td>
+                            <td>Remove a indisponibilidade de um item a um cliente, ou seja, um item que estava
+                                indisponível se torna disponível para a venda.</td>
+                            <td>PRODUCT_ASSORTMENT_UNAVAILABLE</td>
+                            <td><span class="code-block">php artisan delete:product-assortment-unavailable-in-bees
+                                    --delivery_center_id=DC_001 --vendor_account_id=59932818000195
+                                    --vendor_item_ids="7891151036979,7891151037389,7891151038911,7891151038942,7891151038959"</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-enforcement-vendor-item-to-bees</code></td>
+                            <td>Sincroniza o limites da quantidade itens que podem ser vendidos por clientes. Por
+                                exemplo, um cliente só pode comprar a qtd. X daquele item.</td>
+                            <td>ENFORCEMENTS</td>
+                            <td><span class="code-block">php artisan sync:winthor-enforcement-vendor-item-to-bees</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><code>delete:enforcements-from-bees</code></td>
+                            <td>Remove o limites da quantidade itens que podem ser vendidos por clientes. Aconselho
+                                fazer na TELA de integração. Se não buscar o Id no Postgres</td>
+                            <td>ENFORCEMENTS</td>
+                            <td><span class="code-block">php artisan delete:enforcements-from-bees --ids="1,2"</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-prices-to-bees</code></td>
+                            <td>Sincroniza as lista de preço.</td>
+                            <td>PRICES</td>
+                            <td><span class="code-block">php artisan sync:winthor-prices-to-bees</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>delete:prices-in-bees</code></td>
+                            <td>Deleta o preço de um item em uma lista de preço.</td>
+                            <td>PRICES</td>
+                            <td><span class="code-block">php artisan delete:prices-in-bees --type="PRICE_LIST"
+                                    --ids="DC_001_PF_PADRAO_T_1" --vendor-item-id="27896213002927,27896213004563"</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-inventory-to-bees</code></td>
+                            <td>Sincroniza o inventário.</td>
+                            <td>INVENTORY</td>
+                            <td><span class="code-block">php artisan sync:winthor-inventory-to-bees</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>delete:winthor-inventory-in-bees</code></td>
+                            <td>Deleta o inventário de um item em um centro de distribuição.</td>
+                            <td>INVENTORY</td>
+                            <td><span class="code-block">php artisan delete:winthor-inventory-in-bees
+                                    --delivery_center_ids="DC_001"
+                                    --vendor_item_ids="27896213002927,27896213004563"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-promotions-to-bees</code></td>
+                            <td>Sincroniza as promoções.</td>
+                            <td>PROMOTIONS</td>
+                            <td><span class="code-block">php artisan sync:winthor-promotions-to-bees \
+                                    --promotions_ids=1 --promotions_ids=2</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>delete:promotions-in-bees</code></td>
+                            <td>Deleta as promoções, aconcelho fazer via página de intregração, pois pega os ids
+                                corretos do ERP.</td>
+                            <td>PROMOTIONS</td>
+                            <td>
+                                <span class="code-block">php artisan delete:promotions-in-bees \ --promotions_ids=1
+                                    --promotions_ids=2 --promotions_ids=3</span>
+                                ou
+                                <span class="code-block">php artisan delete:promotions-in-bees
+                                    --promotions_ids="1,2,3"</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-deals-to-bees</code></td>
+                            <td>Sincroniza as REGRAS das promoções.</td>
+                            <td>DEALS</td>
+                            <td><span class="code-block">php artisan sync:winthor-deals-to-bees \
+                                    --vendor_promotion_ids=1 --vendor_promotion_ids=2</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>delete:deals-in-bees</code></td>
+                            <td>Deleta as REGRAS das promoções.</td>
+                            <td>DEALS</td>
+                            <td><span class="code-block">php artisan delete:deals-in-bees
+                                    --vendor_deal_ids="123416546,15448848"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-deals-items-that-dont-have-discounts-to-bees</code></td>
+                            <td>Sincroniza as REGRAS dos produtos que NÃO podem receber DESCONTOS durante o mês
+                                corrente.</td>
+                            <td>DEALS</td>
+                            <td><span class="code-block">php artisan
+                                    sync:winthor-deals-items-that-dont-have-discounts-to-bees</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-force-ucc-to-bees</code></td>
+                            <td>Sincroniza a carteira de clientes de cada vendedor</td>
+                            <td>FORCE_UCC</td>
+                            <td><span class="code-block">php artisan sync:winthor-force-ucc-to-bees \
+                                    --ucc_ids="CDBR-1475" --ucc_ids="CDBR-1484"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-disable-force-ucc-to-bees</code></td>
+                            <td>Desativa os vendedores no Bees.</td>
+                            <td>FORCE_UCC</td>
+                            <td><span class="code-block">php artisan sync:winthor-disable-force-ucc-to-bees
+                                    --ucc_ids="CDBR-1484"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-force-visit-to-bees</code></td>
+                            <td>Sincroniza as visitas dos vendedores</td>
+                            <td>FORCE_VISITS</td>
+                            <td><span class="code-block">php artisan sync:winthor-force-visit-to-bees \
+                                    --seller_ids="CDBR-1475"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-force-cancel-visit-to-bees </code></td>
+                            <td>Cancela as visitas dos vendedores. Aconcelho fazer via Tela.</td>
+                            <td>FORCE_VISITS</td>
+                            <td><span class="code-block">php artisan sync:winthor-force-cancel-visit-to-bees
+                                    --visit_ids="CDBR-2265_4683472000153_2025-12-23"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-enforcement-user-budget-to-bees</code></td>
+                            <td>Sincroniza a carteira de orçamento dos vendedores</td>
+                            <td>ENFORCEMENTS_USER_BUDGET</td>
+                            <td><span class="code-block">php artisan sync:winthor-enforcement-user-budget-to-bees
+                                    --user-ids="CDBR-3374"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>delete:enforcement-user-budget-in-bees</code></td>
+                            <td>Cancela a carteira de orçamento dos vendedores.</td>
+                            <td>ENFORCEMENTS_USER_BUDGET</td>
+                            <td><span class="code-block">php artisan delete:enforcement-user-budget-in-bees
+                                    --user-ids="CDBR-3374"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-force-flexible-kpis-to-bees</code></td>
+                            <td>Sincroniza os gráficos dos vendedores</td>
+                            <td>FORCE_FLEXIBLE_KPI</td>
+                            <td><span class="code-block">php artisan sync:winthor-force-flexible-kpis-to-bees
+                                    --bdrid="CDBR-3374"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>delete:winthor-force-flexible-kpis-to-bees</code></td>
+                            <td>Deleta os gráficos dos vendedores</td>
+                            <td>FORCE_FLEXIBLE_KPI</td>
+                            <td><span class="code-block">php artisan delete:enforcement-user-budget-in-bees
+                                    --bdrid="CDBR-3374"</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:bees-freegood</code></td>
+                            <td>Pega os pedidos da Bees e envia para o ERP.</td>
+                            <td>ORDERS</td>
+                            <td><span class="code-block">php artisan sync:bees-freegood</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:bees-orders</code></td>
+                            <td>Localiza FREEGOOD gerados pelo WinThor (PCPEDC/PCPEDI) e cria o pedido FREEGOOD na BEES.
+                            </td>
+                            <td>ORDERS</td>
+                            <td><span class="code-block">php artisan sync:bees-orders</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:bees-bonus</code></td>
+                            <td>Valida se o Pedido original foi confirmado (NUMPED) e gera o pedido do CLUB B no ERP.
+                            </td>
+                            <td>ORDERS</td>
+                            <td><span class="code-block">php artisan sync:bees-bonus</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-orders-changes-third-to-bees</code></td>
+                            <td>Atualiza os Status do Pedido</td>
+                            <td>ORDERS</td>
+                            <td><span class="code-block">php artisan sync:winthor-orders-changes-third-to-bees</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><code>sync:winthor-orders-non-bees-to-bees-v2</code></td>
+                            <td>Sincroniza os pedidos não-Bes</td>
+                            <td>ORDERS</td>
+                            <td><span class="code-block">php artisan sync:winthor-orders-non-bees-to-bees-v2</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>bees:invoices:post-today</code></td>
+                            <td>Sincroniza as faturas do dia corrente.</td>
+                            <td>INVOICES</td>
+                            <td><span class="code-block">php artisan bees:invoices:post-today</span></td>
+                        </tr>
+
+                        <tr>
+                            <td><code>bees:invoices:patch-status</code></td>
+                            <td>Sincroniza os Status das faturas.</td>
+                            <td>INVOICES</td>
+                            <td><span class="code-block">php artisan bees:invoices:patch-status</span></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="agendador">
+            <h2>Agendador (Scheduler)</h2>
+            <p>Rotinas automáticas configuradas no <code>Kernel.php</code> para execução recorrente.</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Comando</th>
+                            <th>Frequência / Timezone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>sync:winthor-accounts-to-bees</code></td>
+                            <td>A cada 4 horas (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-account-credit-to-bees</code></td>
+                            <td>A cada 6 horas (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:check-credit-and-sync</code></td>
+                            <td>A cada 10 minutos (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-delivery-windows-to-bees</code></td>
+                            <td>Diário às 23:50 (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-items-to-bees</code></td>
+                            <td>2x ao dia às 00:00 e 12:00 (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-product-assortment-inclusion-to-bees</code></td>
+                            <td>2x ao dia às 00:00 e 12:00 (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-inventory-to-bees</code></td>
+                            <td>A cada 30 minutos (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-prices-to-bees</code></td>
+                            <td>A cada 3 horas (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-promotions-to-bees</code></td>
+                            <td>A cada 3 horas (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-deals-to-bees</code></td>
+                            <td>A cada 3 horas (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-deals-items-that-dont-have-discounts-to-bees</code></td>
+                            <td>Diário às 03:00 (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-product-assortment-unavailable-to-bees</code></td>
+                            <td>Diário às 02:40 (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>auto-delete:recovered-unavailable</code></td>
+                            <td>Diário às 03:40 (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-enforcement-vendor-item-to-bees</code></td>
+                            <td>A cada 3 horas (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:bees-orders</code> <code>--status=PENDING</code></td>
+                            <td>A cada 5 minutos (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-orders-changes-third-to-bees</code></td>
+                            <td>A cada 5 minutos (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:bees-bonus</code></td>
+                            <td>A cada 5 minutos (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:bees-freegood</code></td>
+                            <td>A cada 5 minutos (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>bees:invoices:post-today</code></td>
+                            <td>A cada 5 minutos (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>bees:invoices:patch-status</code></td>
+                            <td>A cada 10 minutos (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-orders-non-bees-to-bees-v2</code></td>
+                            <td>Diário às 01:00 (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-force-ucc-to-bees</code></td>
+                            <td>Diário às 19:00 (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-force-visit-to-bees</code></td>
+                            <td>Diário às 18:30 (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-enforcement-user-budget-to-bees</code></td>
+                            <td>Mensal no dia 5 às 02:00 (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sync:winthor-force-flexible-kpis-to-bees</code></td>
+                            <td>Diário às 08:00 (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>disable:external-promotions</code></td>
+                            <td>Diário às 00:20 (America/Recife)</td>
+                        </tr>
+                        <tr>
+                            <td><code>pg:backup</code></td>
+                            <td>Diário às 01:00, 09:00 e 17:00 (America/Recife)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="banco">
+            <h2>Estrutura de Dados</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tabela</th>
+                            <th>Colunas Principais</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>users</code></td>
+                            <td>name, cpf, email, is_admin</td>
+                        </tr>
+                        <tr>
+                            <td><code>bees_request_logs</code></td>
+                            <td>visit_id, status, request_log_id</td>
+                        </tr>
+                        <tr>
+                            <td><code>logs</code></td>
+                            <td>type, event, description,subject,user_id</td>
+                        </tr>
+                        <tr>
+                            <td><code>delivery_windows</code></td>
+                            <td>bees_id, delivery_schedule_id, delivery_date,expiration_date,type</td>
+                        </tr>
+                        <tr>
+                            <td><code>enforcements</code></td>
+                            <td>entity_id, entity,
+                                type,scope_type,scope_values,entity_detail,limits,start_date,end_date,status,request_trace_id
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><code>bees_orders_for_winthor_logs</code></td>
+                            <td>feed_back, order_number, code_number, vendor_order_number, account_document,
+                                seller_code, order_date, branch_code, payment_code, payment_plan_code, sales_code,
+                                origin_of_the_order, channel, status, payload_itens, payload_bees, order_completed,
+                                last_modified_sig
+                        </tr>
+                        <tr>
+                            <td><code>bees_invoice_syncs</code></td>
+                            <td>vendor_invoice_id, order_id, last_sent_status</td>
+                        </tr>
+                        <tr>
+                            <td><code>outside_promotions</code></td>
+                            <td>name, supplier, supplier_code, begin_date,final_date,status</td>
+                        </tr>
+                        <tr>
+                            <td><code>outside_promotion_items</code></td>
+                            <td>code, name, max_discount, outside_promotion_id</td>
+                        </tr>
+                        <tr>
+                            <td><code>bees_force_visits</code></td>
+                            <td>visit_id, bdr_id, account_id, delivery_center_id,visit_date,status,status,request_log_id
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><code>orders_non_bees</code></td>
+                            <td>numped, vendor_order_number, channel, last_status_pt, last_status_bees, last_sent_at,
+                                order_completed, sync_pending, tries, last_error, payload_bees</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="faq">
+            <h2>FAQ</h2>
+
+            <div class="faq-accordion">
+
+                <details class="faq-item">
+                    <summary>Clientes com itens faltando no catálogo</summary>
+
+                    <div class="faq-content">
+                        <p>
+                            Em alguns casos, é necessário excluir registros de
+                            <strong>PRODUCT_ASSORTMENT_UNAVAILABLE</strong>.
+                            Esse processo remove os itens que estão marcados como indisponíveis para o cliente,
+                            permitindo que ele volte a ter acesso a esses produtos no catálogo.
+                        </p>
+
+                        <p>
+                            O primeiro passo é identificar, via <strong>query</strong> no POSTGRES, quais itens estão
+                            indisponíveis para o cliente.
+                        </p>
+
+                        <pre>
+SELECT *
+FROM public.bees_request_logs
+WHERE entity = 'PRODUCT_ASSORTMENT_UNAVAILABLE'
+  AND payload::jsonb @> '{"vendorAccountIds": ["05330985000137"]}' -- CNPJ/CPF do cliente
+ORDER BY id ASC;
+        </pre>
+
+                        <p>
+                            Dê preferência para registros do dia <strong>05/11/2025</strong> ou anteriores,
+                            pois nesse período as requisições continham muitas regras, o que gerou
+                            uma grande quantidade de produtos indisponíveis.
+                        </p>
+
+                        <p>
+                            Selecione uma dessas requisições antigas e compare com a última requisição enviada.
+                            Ao comparar:
+                        </p>
+
+                        <ul>
+                            <li><strong>Itens enviados anteriormente</strong></li>
+                            <li><strong>Itens enviados atualmente</strong></li>
+                        </ul>
+
+                        <p>
+                            A diferença entre esses dois conjuntos representa os itens enviados incorretamente.
+                            Esses são os itens que devem ser removidos.
+                        </p>
+
+                        <p>
+                            Após identificar os <code>vendor_item_ids</code> incorretos, execute o comando abaixo
+                            para removê-los:
+                        </p>
+
+                        <pre>
+php artisan delete:product-assortment-unavailable-in-bees \
+--delivery_center_id=DC_001 \
+--vendor_account_id=05330985000137 \
+--vendor_item_ids="7891022854046,7891022854053,7891022854244,7891022854336,
+7891022854787,7891022854794,7891022854862,7891022854879,7891022854893,
+7891022855678,7891022855739,7891022855753,7891022855876,7891022856149,
+7891022856156,7891022856163,7891022856170,7891022856187,7891022856668,
+7891022856729,7891022856811,7891022857771,7891022857917,7891022858426,
+7891022859515,7891022859812,7891022859911,7891022859942,7891022860184"
+        </pre>
+
+                        <p>
+                            <strong>Importante:</strong>
+                            O comando acima é uma ação que altera dados.
+                            A instrução anterior é apenas uma <strong>query de consulta</strong>.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Buscar pedido no PostgreSQL</summary>
+
+                    <div class="faq-content">
+                        <p>
+                            Em alguns cenários, é necessário consultar o
+                            <strong>PostgreSQL</strong> para identificar os
+                            <strong>status enviados à Bees</strong> referentes a um pedido específico.
+                            Para isso, utilizamos principalmente a tabela
+                            <code>bees_request_logs</code>, que armazena o histórico de requisições
+                            enviadas pela aplicação para a Bees.
+                        </p>
+
+                        <p>
+                            Abaixo estão exemplos de <strong>queries</strong> para buscar pedidos
+                            <strong>regulares</strong> (não bonificados):
+                        </p>
+
+                        <pre>
+SELECT *
+FROM public.bees_request_logs
+WHERE entity = 'ORDERS'
+  AND action = 'PATCH'
+  AND payload::jsonb @> '[{"order":{"orderNumber":"9269297348"}}]'
+ORDER BY id ASC;
+
+SELECT *
+FROM public.bees_request_logs
+WHERE entity = 'ORDERS'
+  AND action = 'PATCH'
+  AND EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(payload::jsonb) AS elem
+    WHERE elem->'order'->>'orderNumber' = '9269297348'
+  )
+ORDER BY id ASC;
+    </pre>
+
+                        <p>
+                            Para pedidos de <strong>Bonificação</strong> ou <strong>Clube B</strong>,
+                            o número do pedido está localizado em um nível diferente do JSON.
+                            Nesses casos, utilize a query abaixo:
+                        </p>
+
+                        <pre>
+SELECT *
+FROM public.bees_request_logs
+WHERE entity = 'ORDERS'
+  AND action = 'PATCH'
+  AND EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(payload::jsonb) AS elem
+    WHERE elem->'order'->'vendor'->>'orderNumber' = 'FREEG_9263680553_2147483647'
+  )
+ORDER BY id ASC;
+    </pre>
+
+                        <p>
+                            Além disso, existe a tabela
+                            <code>bees_orders_for_winthor_logs</code>, que representa o
+                            <strong>espelho dos pedidos do Winthor</strong>.
+                            Diferente da <code>bees_request_logs</code>, que registra os envios para a Bees,
+                            essa tabela contém o estado consolidado do pedido no fluxo Winthor → Bees.
+                        </p>
+
+                        <p>
+                            Para localizar pedidos regulares nessa tabela, utilize o
+                            <code>order_number</code>:
+                        </p>
+
+                        <pre>
+SELECT *
+FROM public.bees_orders_for_winthor_logs
+WHERE order_number IN ('9264041562', '9264113487')
+ORDER BY order_number ASC;
+    </pre>
+
+                        <p>
+                            Para pedidos de <strong>Bonificação</strong> ou <strong>Clube B</strong>,
+                            utilize o campo <code>vendor_order_number</code>:
+                        </p>
+
+                        <pre>
+SELECT *
+FROM public.bees_orders_for_winthor_logs
+WHERE vendor_order_number = 'FREEG_9262568177_2489001861';
+    </pre>
+
+                        <p>
+                            Caso seja necessário filtrar pedidos por <strong>status</strong>,
+                            utilize a consulta abaixo:
+                        </p>
+
+                        <pre>
+SELECT *
+FROM public.bees_orders_for_winthor_logs
+WHERE status = 'FREEGOOD_PENDING';
+    </pre>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Buscar cliente no PostgreSQL</summary>
+
+                    <div class="faq-content">
+                        <p>
+                            Em alguns cenários, é necessário consultar o
+                            <strong>PostgreSQL</strong> para verificar os dados de um cliente
+                            que estão sendo enviados para a Bees.
+                            Essas informações podem ser encontradas na tabela
+                            <code>bees_request_logs</code>, que armazena o histórico das requisições
+                            de clientes enviadas pela aplicação.
+                        </p>
+
+                        <p>
+                            Para localizar um cliente utilizando o
+                            <strong>CNPJ ou CPF</strong>, utilize a query abaixo:
+                        </p>
+
+                        <pre>
+SELECT *
+FROM public.bees_request_logs
+WHERE entity = 'ACCOUNTS'
+  -- AND (created_at AT TIME ZONE 'America/Recife')::date = DATE '2025-12-12'
+  AND payload::jsonb @> '[{"customerAccountId":"20390868000152"}]';
+    </pre>
+
+                        <p>
+                            Caso seja necessário buscar o cliente pelo
+                            <strong>código interno</strong> (ex.: <code>challengeIds</code>),
+                            utilize a consulta abaixo:
+                        </p>
+
+                        <pre>
+SELECT *
+FROM public.bees_request_logs
+WHERE entity = 'ACCOUNTS'
+  AND (created_at AT TIME ZONE 'America/Recife')::date = DATE '2025-12-12'
+  AND EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(payload::jsonb) AS elem
+    -- WHERE elem->'challengeIds' ?| array['76640','79438','71202']
+    WHERE elem->'challengeIds' ?| array['72975']
+  );
+    </pre>
+
+                        <p>
+                            <strong>Dica:</strong>
+                            O filtro por data é opcional, mas recomendado quando há um grande volume
+                            de registros, pois melhora significativamente a performance da consulta.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Buscar valor de item na lista de preços (PostgreSQL)</summary>
+
+                    <div class="faq-content">
+                        <p>
+                            Em alguns cenários, é necessário consultar o
+                            <strong>PostgreSQL</strong> para verificar o
+                            <strong>valor de um item em uma lista de preços</strong>
+                            que está sendo enviada para a Bees.
+                            Essas informações estão disponíveis na tabela
+                            <code>bees_request_logs</code>, que armazena o histórico das
+                            requisições de preços enviadas pela aplicação.
+                        </p>
+
+                        <p>
+                            A query abaixo permite localizar registros de atualização de preços
+                            (<code>entity = 'PRICES'</code> e <code>action = 'PUT'</code>)
+                            contendo um item específico, identificado pelo
+                            <code>vendorItemId</code>:
+                        </p>
+
+                        <pre>
+SELECT *
+FROM public.bees_request_logs
+WHERE entity = 'PRICES'
+  AND action = 'PUT'
+  AND EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements((payload::jsonb)->'prices') AS p
+    WHERE p->>'vendorItemId' = '7891152801552'
+  );
+    </pre>
+
+                        <p>
+                            <strong>Dica:</strong>
+                            Caso haja muitos registros, é recomendável adicionar filtros por
+                            data (<code>created_at</code>) ou centro de distribuição,
+                            para melhorar a performance da consulta.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Buscar Items no PostgreSQL</summary>
+
+                    <div class="faq-content">
+                        <p>
+                            Em alguns cenários, é necessário consultar o
+                            <strong>PostgreSQL</strong> para verificar os dados de um item
+                            que está sendo enviado para a Bees.
+                            Essas informações podem ser encontradas na tabela
+                            <code>bees_request_logs</code>, que armazena o histórico das requisições
+                            de items enviadas pela aplicação.
+                        </p>
+
+                        <p>
+                            Para localizar um item utilizando o
+                            <strong>EAN</strong>, utilize a query abaixo:
+                        </p>
+
+                        <pre>
+SELECT *
+FROM public.bees_request_logs
+WHERE entity = 'ITEMS'
+  AND action = 'PUT'
+  AND payload::jsonb @> '[{"sourceData":{"vendorItemId":"7896004402000"}}]'::jsonb
+ORDER BY id ASC;
+    </pre>
+
+                        <p>
+                            Caso seja necessário buscar o iem pelo
+                            <strong>código interno</strong>,
+                            utilize a consulta abaixo:
+                        </p>
+
+                        <pre>
+SELECT l.*
+FROM public.bees_request_logs l
+WHERE l.entity = 'ITEMS'
+  AND l.action = 'PUT'
+  AND EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(l.payload::jsonb) AS it(item)
+    WHERE it.item->>'description' ILIKE '%.:228051'
+  )
+ORDER BY l.id ASC;
+    </pre>
+
+                        <p>
+                            <strong>Dica:</strong>
+                            O filtro por data é opcional, mas recomendado quando há um grande volume
+                            de registros, pois melhora significativamente a performance da consulta.
+                        </p>
+                    </div>
+                </details>
+
+            </div>
+        </section>
+
+
     </main>
-  </div>
 
-  <template id="sectionTemplate">
-    <section class="doc-section">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title"></h2>
-          <p class="section-desc"></p>
-        </div>
-        <div class="section-actions">
-          <button class="btn ghost section-link">#</button>
-          <button class="btn ghost section-toggle">Recolher</button>
-        </div>
-      </div>
-      <div class="section-body"></div>
-    </section>
-  </template>
+    <script>
+        const links = document.querySelectorAll('nav a');
+        const sections = document.querySelectorAll('main section');
+        const faqItems = document.querySelectorAll('#faq .faq-item');
 
-  <template id="cardTemplate">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title"></div>
-        <div class="card-actions"></div>
-      </div>
-      <div class="card-body"></div>
-    </div>
-  </template>
+        links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
 
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
-  <script defer src="app.js"></script>
+                links.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === targetId) section.classList.add('active');
+                });
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Navegação via Hash
+        window.addEventListener('load', () => {
+            const hash = window.location.hash;
+            if (hash) {
+                const targetLink = document.querySelector(`nav a[href="${hash}"]`);
+                if (targetLink) targetLink.click();
+            }
+        });
+
+        faqItems.forEach((item) => {
+            item.addEventListener('toggle', () => {
+                if (item.open) {
+                    faqItems.forEach((other) => {
+                        if (other !== item) other.removeAttribute('open');
+                    });
+                }
+            });
+        });
+    </script>
 </body>
+
 </html>
